@@ -14,7 +14,8 @@ int s21_from_int_to_decimal(int src, s21_decimal *dst) {
             src *= -1;
         }
         while (bitcount !=0) {
-            int bitval = src % 2;
+            int bitval = 0;
+            if (src / 2) bitval = src % 2;
             dst->bits[3] = dst->bits[3] >> 1;
             dst->bits[3] = dst->bits[3] | getbit(dst->bits[2]);
             dst->bits[2] = dst->bits[2] >> 1;
