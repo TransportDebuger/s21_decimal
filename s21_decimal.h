@@ -22,11 +22,21 @@ typedef struct {
 } s21_decimal;
 
 //int sign = bits[0] >> 31
-//функция изменения знака переменной
-int s21_negate(s21_decimal value, s21_decimal *result);
-
 //int offset = (bits[0] << 1) >> 16
 
+//Изменение знака переменной
+int s21_negate(s21_decimal value, s21_decimal *result);
+
+//Преобразователи
+int s21_from_int_to_decimal(int src, s21_decimal *dst);
+
+/*| Преобразователь | Функция | 
+| ------ | ------ |
+| Из int | int s21_from_int_to_decimal(int src, s21_decimal *dst) |
+| Из float  | int s21_from_float_to_decimal(float src, s21_decimal *dst) |
+| В int  | int s21_from_decimal_to_int(s21_decimal src, int *dst) |
+| В float  | int s21_from_decimal_to_float(s21_decimal src, float *dst) |
+*/
 /* 
 - Приведение к типу.
 Конвертация float должна осуществлять за счет умножения на 10 в степени, обеспечивающей его приведение к целому числу.
