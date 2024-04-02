@@ -1,28 +1,35 @@
 #include "s21_decimal.h"
 
-int getbit(int src);
-
 int s21_from_int_to_decimal(int src, s21_decimal *dst) {
-    int err = 0;
+    int err = 1;
 
     if (dst) {
-        int bitcount = 95;
-
-        for (char i = 0; i < 4; i++) dst->bits[i] = 0;
-        if (src < 0) {
-            s21_negate(*dst, dst);
-            src *= -1;
+        for (char i = HIGH; i <= SERVICE; i++) {
+            dst->bits[i] = 0;
         }
-        dst->bits[3] = src;
-    } else {
-        err = 1;
+        if (src >= 0) {
+            dst->bits[LOW] = src;
+        } else {
+            s21_set_bit(dst, SERVICE, SIGN_BIT);
+            dst->bits[LOW] = -src;
+        }
+        err = 0;
     }
 
     return err;
 }
-/*
-int getbit(int src) {
-    int bit = 1;
 
-    return (src & bit) ? bit << 31 : 0;
-}*/
+int s21_from_decimal_to_int(s21_decimal src, int *dst) {
+    int err= 1;
+    if (dst) {
+        s21_truncate(src, &src);
+        if (!src.bits[HIGH] && !src.bits[MID] && src.bits[LOW] >= 0) {
+            if (s21_get_sign(src)) {
+                src.bits[LOW] = -(src.bits[LOW]);
+            }
+            *dst = src.bits[LOW];
+            err = 0;
+        }
+    }
+    return err
+}

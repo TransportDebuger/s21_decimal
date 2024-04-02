@@ -1,11 +1,26 @@
 #ifndef S21_DECIMAL_H
 #define S21_DECIMAL_H
 
-//максимальное смещение запятой (порядок)
-#define MAX_OFFSET 28
+#define MAX_OFFSET 28 //максимальное смещение запятой (порядок)
+#define MIN_OFFSET 0  //минимальное смещение запятой (порядок)
+#define SIGN_BIT 31
 
-//#define DECIMAL_MAX_VALUE (2^96-1)
-//#define DECIMAL_MIN_VALUE (-(2^96-1))
+enum byte {
+    HIGH = 0,
+    MID,
+    LOW,
+    SERVICE
+};
+
+typedef struct {
+    int bits[4];
+} s21_decimal;
+
+int s21_get_sign(s21_decimal value);
+int s21_set_bit(s21_decimal* value, int n_bits, int n);
+int s21_get_exp(float f);
+int s21_get_bit(s21_decimal decimal,unsigned int pos);
+char s21_get_scale(s21_decimal const decimal);
 
 /*тип s21_decimal
 для реализации: 
@@ -17,10 +32,6 @@ bits[0]:
 bits[1-3]: под целочисленное представление числа.
 */
 
-typedef struct {
-    int bits[4];
-} s21_decimal;
-
 //int sign = bits[0] >> 31
 //int offset = (bits[0] << 1) >> 16
 
@@ -29,7 +40,17 @@ int s21_negate(s21_decimal value, s21_decimal *result);
 
 //Преобразователи
 int s21_from_int_to_decimal(int src, s21_decimal *dst);
+int s21_from_decimal_to_int(s21_decimal src, int *dst);
 int s21_from_float_to_decimal(float src, s21_decimal *dst);
+
+//Сравнение
+
+int s21_is_less(s21_decimal, s21_decimal);
+int s21_is_less_or_equal(s21_decimal, s21_decimal);
+int s21_is_greater(s21_decimal, s21_decimal);
+int s21_is_greater_or_equal(s21_decimal, s21_decimal);
+int s21_is_equal(s21_decimal, s21_decimal);
+int s21_is_not_equal(s21_decimal, s21_decimal);
 
 /*| Преобразователь | Функция | 
 | ------ | ------ |
